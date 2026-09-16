@@ -1,1 +1,9 @@
+backend/.env
+backend/certs/
 backend/node_modules/
+backend/otrails-api-arm64.tar
+backend/otrails-api.tar
+backend/otrails-backend-https-arm64.tar
+backend/otrails-backend-https.tar
+.git-credentials
+
