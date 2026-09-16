@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=192.68.10.15
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=eol*1024
+      - DB_NAME=oTrails_d
+    restart: always

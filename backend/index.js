@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const https = require('https');
 
 const app = express();
 
@@ -41,9 +43,29 @@ app.use('/api/gpx', checkJwt, gpxRouter);
 }); */
 
 if (require.main === module) {
-    app.listen(process.env.PORT, () => {
-        console.log(`Servidor backend escuchando en http://localhost:${process.env.PORT}`);
-    });
+    const port = parseInt(process.env.PORT, 10) || 3000;
+    const useHttps = process.env.HTTPS === 'true' || process.env.HTTPS === '1';
+
+    if (useHttps) {
+        const certPath = process.env.SSL_CERT_PATH || './ssl/cert.pem';
+        const keyPath = process.env.SSL_KEY_PATH || './ssl/key.pem';
+
+        if (!fs.existsSync(certPath) || !fs.existsSync(keyPath)) {
+            console.error('HTTPS enabled but SSL_CERT_PATH/SSL_KEY_PATH certificate files not found.');
+            process.exit(1);
+        }
+
+        const cert = fs.readFileSync(certPath);
+        const key = fs.readFileSync(keyPath);
+
+        https.createServer({ key, cert }, app).listen(port, () => {
+            console.log(`Servidor backend escuchando en https://localhost:${port}`);
+        });
+    } else {
+        app.listen(port, () => {
+            console.log(`Servidor backend escuchando en http://localhost:${port}`);
+        });
+    }
 }
 
 module.exports = app;

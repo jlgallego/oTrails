@@ -20,14 +20,14 @@ router.get('/', async (req, res) => {
 // Crear un track nuevo
 // POST	/api/tracks
 router.post('/', async (req, res) => {
-  const { title, description, geom } = req.body;
+  const { title, description, geom, sport } = req.body;
   const userId = req.auth.userId;  // From token
 
   try {
     const query = `
-      INSERT INTO tracks (user_id, title, description, geom, created_at, updated_at)
-      VALUES ($1, $2, $3, $4::jsonb, NOW(), NOW()) RETURNING *`;
-    const values = [userId, title, description, geom];
+      INSERT INTO tracks (user_id, title, description, geom, sport, created_at, updated_at)
+      VALUES ($1, $2, $3, $4::jsonb, $5, NOW(), NOW()) RETURNING *`;
+    const values = [userId, title, description, geom, sport];
     const result = await pool.query(query, values);
     res.status(201).json(result.rows[0]);
   } catch (err) {
